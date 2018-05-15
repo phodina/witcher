@@ -12,7 +12,7 @@ objects = loader.o kernel.o
 	$(CPP) $(CPPPARAMS) -o $@ -c $<
 
 %.o: %.s
-	$(AS) $(ASPARAMS) -o $@ @<
+	$(AS) $(ASPARAMS) -o $@ $<
 
 mykernel.bin: linker.ld $(objects)
 	$(LD) $(LDPARAMS) -T $< -o $@ $(objects)
