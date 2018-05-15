@@ -3,7 +3,7 @@ CPP = g++
 LD = ld
 
 ASPARAMS = --32
-CPPPARAMS = -m32
+CPPPARAMS = -m32 -fno-use-c-cxa-atexit -nostflib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 LDPARAMS = -melf_i386
 
 objects = loader.o kernel.o
