@@ -3,10 +3,12 @@ CPP = g++
 LD = ld
 
 ASPARAMS = --32
-CPPPARAMS = -m32 -fno-use-c-cxa-atexit -nostflib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
+CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 LDPARAMS = -melf_i386
 
 objects = loader.o kernel.o
+
+all: mykernel.bin
 
 %.o: %.cpp
 	$(CPP) $(CPPPARAMS) -o $@ -c $<
@@ -38,3 +40,6 @@ mykernel.iso: mykernel.bin
 qemu: mykernel.iso
 	(killall qemu-system-i386 && sleep 1) || true
 	qemu-system-i386 -boot d -cdrom $< -m 256 &
+
+clean:
+	rm mykernel.bin mykernel.iso *.o
