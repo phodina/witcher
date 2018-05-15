@@ -6,7 +6,7 @@ ASPARAMS = --32
 CPPPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
 LDPARAMS = -melf_i386
 
-objects = loader.o gdt.o kernel.o
+objects = loader.o gdt.o port.o kernel.o
 
 all: mykernel.bin
 
@@ -41,5 +41,6 @@ qemu: mykernel.iso
 	(killall qemu-system-i386 && sleep 1) || true
 	qemu-system-i386 -boot d -cdrom $< -m 256 &
 
+.PHONY: clean
 clean:
-	rm mykernel.bin mykernel.iso *.o
+	rm -f $(objects) mykernel.bin mykernel.iso
