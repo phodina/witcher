@@ -17,3 +17,10 @@ To run the kernel you can use QEMU.
 ```
 	make qemu
 ```
+
+# Progress
+
+* [x] Hello world
+* [x] Memory management (GDT)
+* [x] Ports
+* [ ] Interrupts
