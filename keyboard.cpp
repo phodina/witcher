@@ -23,12 +23,20 @@ KeyboardDriver::~KeyboardDriver() {}
 uint32_t KeyboardDriver::handleInterrupt(uint32_t esp) {
 
   uint8_t key = dataport.read();
-  
-  char* msg = "Keyboard 0x00";
-  char* hex = "01234567890ABCDEF";
-  msg[11] = hex[(key >> 4) & 0xF];
-  msg[12] = hex[key & 0x0F];
-  printf(msg);
-    
+
+  if (key < 0x80) {
+    switch(key) {
+    case 0xC5:
+    case 0xfa:
+    case 0x45:
+      break;
+    default:
+      char* msg = "Keyboard 0x00";
+      char* hex = "01234567890ABCDEF";
+      msg[11] = hex[(key >> 4) & 0xF];
+      msg[12] = hex[key & 0x0F];
+      printf(msg);
+    };
+  }
   return esp;
 }
