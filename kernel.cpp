@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gdt.h"
+#include "interrupts.h"
 
 void printf(char* str) {
 
@@ -45,6 +46,8 @@ extern "C" void kernelMain (void *multiboot_structure, uint32_t magic_number) {
   printf("Hello Witcher!\n");
 
   GlobalDescriptorTable gdt;
+  InterruptManager interrupts(&gdt);
+  interrupts.activate();
   
   while(1);
 }
