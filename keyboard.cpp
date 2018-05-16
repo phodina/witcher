@@ -10,7 +10,7 @@ KeyboardDriver::KeyboardDriver(InterruptManager *manager) : InterruptHandler(0x2
 
   commandport.write(0xAE); // activate interrupts
   commandport.write(0x20); // give current state
-  uint8_t status = (commandport.read() | 1) & ~0x10;
+  uint8_t status = (dataport.read() | 1) & ~0x10;
   commandport.write(0x60); // set state
   dataport.write(status);
 
