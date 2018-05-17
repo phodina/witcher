@@ -1,8 +1,20 @@
 #include "types.h"
 #include "gdt.h"
 #include "interrupts.h"
+#include "driver.h"
 #include "keyboard.h"
 #include "mouse.h"
+
+void printf(char *str);
+
+void printfHex(uint8_t key){
+
+  char *foo = "00";
+  char *hex = "0123456789ABCDEF";
+  foo[0] = hex[(key >> 4) & 0x0f];
+  foo[1] = hex[key & 0x0f];
+  printf(foo);
+}
 
 void printf(char* str) {
 
@@ -45,14 +57,28 @@ extern "C" void kernelMain (void *multiboot_structure, uint32_t magic_number) {
 
   printf("Hello Witcher!\n");
 
-  printf("Hello Witcher!\n");
-
+  printf("Initializing Hardware, Stage 1\n");
+  
   GlobalDescriptorTable gdt;
   InterruptManager interrupts(&gdt);
 
-  KeyboardDriver keyboard(&interrupts);
-  MouseDriver mouse(&interrupts);
+  DriverManager drvManager;
+
+  PrintfKeyboardEventHandler kbhandler;
+  KeyboardDriver keyboard(&interrupts, &kbhandler);
+  drvManager.addDriver(&keyboard);
+
+  MouseToConsole mousehandler;
+  MouseDriver mouse(&interrupts, &mousehandler);
+  drvManager.addDriver(&mouse);
+
+  printf("Initializing Hardware, Stage 2\n");
+  drvManager.activateAll();
+  
+  printf("Initializing Hardware, Stage 3\n");
   interrupts.activate();
 
   while(1);
 }
+
+

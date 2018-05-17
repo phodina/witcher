@@ -6,7 +6,7 @@ ASPARAMS = --32
 CPPPARAMS = -m32 -Wno-write-strings -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
 LDPARAMS = -melf_i386
 
-objects = loader.o gdt.o port.o kernel.o interrupts.o interruptstubs.o keyboard.o mouse.o
+objects = loader.o gdt.o port.o kernel.o interrupts.o interruptstubs.o keyboard.o mouse.o driver.o
 
 all: mykernel.bin
 
