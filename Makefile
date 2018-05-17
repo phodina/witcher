@@ -3,17 +3,19 @@ CPP = g++
 LD = ld
 
 ASPARAMS = --32
-CPPPARAMS = -m32 -Wno-write-strings -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
+CPPPARAMS = -m32 -Wno-write-strings -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -Iinc
 LDPARAMS = -melf_i386
 
-objects = loader.o gdt.o port.o kernel.o interrupts.o interruptstubs.o keyboard.o mouse.o driver.o
+objects = obj/loader.o obj/gdt.o obj/hardwarecommunication/port.o obj/kernel.o obj/hardwarecommunication/interrupts.o obj/hardwarecommunication/interruptstubs.o obj/drivers/keyboard.o obj/drivers/mouse.o obj/drivers/driver.o
 
 all: mykernel.bin
 
-%.o: %.cpp
+obj/%.o: src/%.cpp
+	mkdir -p $(@D)
 	$(CPP) $(CPPPARAMS) -o $@ -c $<
 
-%.o: %.s
+obj/%.o: src/%.s
+	mkdir -p $(@D)
 	$(AS) $(ASPARAMS) -o $@ $<
 
 mykernel.bin: linker.ld $(objects)
@@ -45,4 +47,4 @@ qemu64: mykernel.iso
 	qemu-system-x86_64 -display curses -boot d -cdrom $< -m 512 &
 .PHONY: clean
 clean:
-	rm -f $(objects) mykernel.bin mykernel.iso
+	rm -rf obj mykernel.bin mykernel.iso

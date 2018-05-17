@@ -1,8 +1,12 @@
-#ifndef __DRIVER_H
-#define __DRIVER_H
+#ifndef __MYOS_DRIVERS_DRIVER_H
+#define __MYOS_DRIVERS_DRIVER_H
 
-#include "types.h"
+#include <common/types.h>
 
+using namespace myos::common;
+
+namespace myos {
+  namespace drivers {
 class Driver
 {
  public:
@@ -26,4 +30,6 @@ class DriverManager
   void addDriver(Driver* driver);
   void activateAll();
 };
+  }
+}
 #endif

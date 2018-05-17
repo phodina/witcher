@@ -1,10 +1,15 @@
-#ifndef __INTERRUPTS_H
-#define __INTERRUPTS_H
+#ifndef __MYOS_HARDWARECOMMUNICATION_INTERRUPTS_H
+#define __MYOS_HARDWARECOMMUNICATION_INTERRUPTS_H
 
-#include "types.h"
-#include "port.h"
-#include "gdt.h"
+#include <common/types.h>
+#include <hardwarecommunication/port.h>
+#include <gdt.h>
 
+using namespace myos::common;
+
+namespace myos {
+  namespace hardwarecommunication {
+    
 class InterruptManager;
 
 class InterruptHandler
@@ -45,12 +50,12 @@ class InterruptManager
   
   static void setInterruptDescriptorTableEntry(uint8_t interruptNumber, uint16_t codeSegmentSelectorOffset, void (*handler)(), uint8_t DescriptorPriviledgeLevel, uint8_t DescriptorType);
 
-  Port8BitSlow picMasterCommand;
-  Port8BitSlow picMasterData;
-  Port8BitSlow picSlaveCommand;
-  Port8BitSlow picSlaveData;
+  myos::hardwarecommunication::Port8BitSlow picMasterCommand;
+  myos::hardwarecommunication::Port8BitSlow picMasterData;
+  myos::hardwarecommunication::Port8BitSlow picSlaveCommand;
+  myos::hardwarecommunication::Port8BitSlow picSlaveData;
  public:
-  InterruptManager(GlobalDescriptorTable *gdt);
+  InterruptManager(myos::GlobalDescriptorTable *gdt);
   ~InterruptManager();
   
   static uint32_t handleInterrupt(uint8_t interruptNumber, uint32_t esp);
@@ -65,4 +70,7 @@ class InterruptManager
   static void HandleInterruptRequest0x0C();
 
 };
+
+  }
+}
 #endif

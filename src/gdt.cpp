@@ -1,4 +1,7 @@
-#include "gdt.h"
+#include <gdt.h>
+
+using namespace myos;
+using namespace myos::common;
 
 GlobalDescriptorTable::SegmentDescriptor::SegmentDescriptor(uint32_t base, uint32_t limit, uint8_t flags) {
 

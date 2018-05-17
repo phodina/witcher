@@ -1,8 +1,12 @@
-#ifndef __PORT_H
-#define __PORT_H
+#ifndef __MYOS_HARDWARECOMMUNICATION_PORT_H
+#define __MYOS_HARDWARECOMMUNICATION_PORT_H
 
-#include "types.h"
+#include <common/types.h>
 
+using namespace myos::common;
+
+namespace myos {
+  namespace hardwarecommunication {
 class Port
 {
  protected:
@@ -46,5 +50,6 @@ class Port32Bit : public Port
   virtual void write(uint32_t data);
   virtual uint32_t read();
 };
-
+  }
+}
 #endif
