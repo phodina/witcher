@@ -3,3 +3,4 @@ mykernel.bin
 mykernel.iso
 *~
 .#*
+.gdb_history
