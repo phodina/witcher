@@ -4,6 +4,7 @@
 #include <drivers/driver.h>
 #include <drivers/keyboard.h>
 #include <drivers/mouse.h>
+#include <hardwarecommunication/pci.h>
 
 using namespace myos;
 using namespace myos::common;
@@ -77,6 +78,9 @@ extern "C" void kernelMain (void *multiboot_structure, uint32_t magic_number) {
   MouseDriver mouse(&interrupts, &mousehandler);
   drvManager.addDriver(&mouse);
 
+  PeripheralComponentInterconnectController pciController;
+  pciController.selectDrivers(&drvManager);
+  
   printf("Initializing Hardware, Stage 2\n");
   drvManager.activateAll();
   
