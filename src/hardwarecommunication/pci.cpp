@@ -1,5 +1,8 @@
 #include <hardwarecommunication/pci.h>
 
+// lspci -n (shows vendor and device id)
+// lspci -x (dumps pci config space)
+
 using namespace myos::common;
 using namespace myos::hardwarecommunication;
 
@@ -41,7 +44,7 @@ bool PeripheralComponentInterconnectController::detectHasFunctions(uint16_t bus,
   return read(bus, device, 0, 0x0E) & (1<<7);
 }
 
-void PeripheralComponentInterconnectController::selectDrivers(DriverManager *driverManager){
+void PeripheralComponentInterconnectController::selectDrivers(DriverManager *driverManager, InterruptManager *interrupts){
 
   for (int bus=0; bus<8; bus++) {
 
@@ -53,9 +56,23 @@ void PeripheralComponentInterconnectController::selectDrivers(DriverManager *dri
 
 	 if (dev.vendor_id == 0x0000 || dev.vendor_id == 0xffff)
 	   {
-	     break;
+	     continue;
 	   }
 
+	 for (int barNum=0; barNum < 6; barNum++)
+	   {
+	     BaseAddressRegister bar = getBaseAddressRegister(bus, device, function, barNum);
+	     
+	     if (bar.address && (bar.type == BaseAddressRegisterType::InputOutput)) {
+	       dev.portBase = (uint32_t) bar.address;
+
+	       Driver *driver = getDriver(&dev, interrupts);
+	       if (driver != 0) {
+		 driverManager->addDriver(driver);
+	       }
+	     }
+	   }
+	 
 	 printf("PCI BUS ");
 	 printfHex(bus & 0xff);
 
@@ -95,4 +112,74 @@ PeripheralComponentInterconnectDeviceDescriptor PeripheralComponentInterconnectC
   result.interrupt = read(bus,device,function, 0x3c);
   
   return result;
+}
+
+BaseAddressRegister PeripheralComponentInterconnectController::getBaseAddressRegister(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar){
+  BaseAddressRegister result;
+
+  uint32_t headerType = read(bus, device, function, 0x0E) & 0x7F;
+  int maxBARs = 6-(4*headerType);
+  if (bar>= maxBARs)
+    {
+    return result;
+    }
+
+  uint32_t bar_value = read(bus, device, function, 0x10 + 4 * bar);
+  result.type = (bar & 0x01) ? BaseAddressRegisterType::InputOutput : BaseAddressRegisterType::MemoryMapping;
+
+  uint32_t temp;
+
+  if (result.type == BaseAddressRegisterType::MemoryMapping){
+
+    switch((bar_value >> 1) & 0x3) {
+    case 0: // 32bit mode
+      break;
+    case 1: // 20bit mode
+      break;
+    case 2: // 64bit mode
+      break;
+    default:
+      break;
+    }
+
+    result.prefetchable = ((bar_value >> 3) & 0x01) == 0x01;
+  }
+  else {
+    result.address = (uint8_t*) (bar_value & ~0x03);
+    result.prefetchable = false;
+  }
+  
+  return result;
+}
+
+
+Driver* PeripheralComponentInterconnectController::getDriver(PeripheralComponentInterconnectDeviceDescriptor *dev,InterruptManager *interrupts)
+{
+  switch(dev->vendor_id)
+    {
+    case 0x1022: // AMD
+      switch(dev->device_id)
+	{
+	case 0x2000: // am79c973
+	  break;
+	}
+      break;
+    case 0x8086: // Intel
+      printf("Intel VID\n");
+      break;
+      
+    }
+
+  switch(dev->class_id)
+    {
+    case 0x03: // Graphics
+      switch(dev->subclass_id)
+	{
+	case 0x00: // VGA
+	  break;
+	}
+      break;
+    }
+  
+  return 0;
 }

@@ -79,7 +79,7 @@ extern "C" void kernelMain (void *multiboot_structure, uint32_t magic_number) {
   drvManager.addDriver(&mouse);
 
   PeripheralComponentInterconnectController pciController;
-  pciController.selectDrivers(&drvManager);
+  pciController.selectDrivers(&drvManager, &interrupts);
   
   printf("Initializing Hardware, Stage 2\n");
   drvManager.activateAll();

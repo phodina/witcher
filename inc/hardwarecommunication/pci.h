@@ -12,6 +12,21 @@ using namespace myos::common;
 namespace myos {
   namespace hardwarecommunication{
 
+    enum BaseAddressRegisterType
+    {
+      MemoryMapping = 0,
+      InputOutput = 1
+    };
+
+    class BaseAddressRegister
+    {
+    public:
+      bool prefetchable;
+      uint8_t *address;
+      uint32_t size;
+      BaseAddressRegisterType type;
+    };
+    
     class PeripheralComponentInterconnectDeviceDescriptor
     {
     public:
@@ -48,8 +63,12 @@ namespace myos {
 
       bool detectHasFunctions(uint16_t bus, uint16_t device);
 
-      void selectDrivers(DriverManager *driverManager);
+      void selectDrivers(DriverManager *driverManager, InterruptManager *interrupts);
       PeripheralComponentInterconnectDeviceDescriptor getDeviceDescriptor(uint16_t bus, uint16_t device, uint16_t function);
+
+      BaseAddressRegister getBaseAddressRegister(uint16_t bus, uint16_t device, uint16_t function, uint16_t bar);
+
+      Driver* getDriver(PeripheralComponentInterconnectDeviceDescriptor *dev,InterruptManager *interrupts);
     };
   }
 }

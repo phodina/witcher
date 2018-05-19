@@ -9,6 +9,7 @@ LDPARAMS = -g -melf_i386
 objects = obj/loader.o obj/gdt.o obj/hardwarecommunication/port.o obj/kernel.o obj/hardwarecommunication/interrupts.o obj/hardwarecommunication/interruptstubs.o obj/drivers/keyboard.o obj/drivers/mouse.o obj/drivers/driver.o obj/hardwarecommunication/pci.o
 
 all: mykernel.bin
+run: qemu
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)
